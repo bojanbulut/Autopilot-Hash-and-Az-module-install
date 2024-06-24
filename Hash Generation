@@ -1,12 +1,20 @@
 
-Set-ExecutionPolicy Unrestricted #Permissions 
-mkdir "C:\AP\AutopilotHash"
-$Azpath= "C:\Program Files\WindowsPowerShell\Modules\Az"
-$AzureRM = Test-path -Path "C:\Program Files\WindowsPowerShell\Modules\Az"
+Set-ExecutionPolicy Bypass #Permissions 
 
-Install-PackageProvider -Name NuGet -Force | write-host "NuGet Installed" #install dependency
-Install-Script -Name Get-WindowsAutoPilotInfo -force | Out-File -FilePath "C:\AP\AutopilotHash"
-Install-Module -Name AzureRM -Force
+$pathbool = test-path -Path "C:\Program Files\WindowsPowerShell\Modules\AzureRM" #Boolean operator to check for AzureRM install
 
-if ($AzureRM -eq $false){ 
-Write-Host "AzureRM is already installed"}
+setx PATH "$env:path;C:\Program Files\WindowsPowerShell\Scripts" -m #set default path
+
+Install-PackageProvider -Name NuGet -Force #install dependency
+
+mkdir "C:\HWID" #Making a directory to store the hash output value
+
+if ($pathbool -eq $False) {Install-Module -Name AzureRM -Force; Write-Host "Azure Module has been installed"} else {Write-Host "AzureRM is already installed"} #Checking for Azure RM module and installing it if it is not on the system
+
+
+Start-Sleep -Seconds 10 #10 second pause before the next line
+
+Install-Script -Name Get-WindowsAutoPilotInfo #installing the Get-WindowsAutoPilotInfo module, as this is required to get the AP hash value
+
+Get-WindowsAutoPilotInfo.ps1 | Out-File "C:\HWID\HWID.txt"; Write-Host "Autopilot hash has been saved under C:\HWID\HWID.txt" # exporting the hash under C:\HWID as a text file
+# exit , this is commented out so I can test without closing PS ISE every time. 
