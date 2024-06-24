@@ -1,0 +1,12 @@
+
+Set-ExecutionPolicy Unrestricted #Permissions 
+mkdir "C:\AP\AutopilotHash"
+$Azpath= "C:\Program Files\WindowsPowerShell\Modules\Az"
+$AzureRM = Test-path -Path "C:\Program Files\WindowsPowerShell\Modules\Az"
+
+Install-PackageProvider -Name NuGet -Force | write-host "NuGet Installed" #install dependency
+Install-Script -Name Get-WindowsAutoPilotInfo -force | Out-File -FilePath "C:\AP\AutopilotHash"
+Install-Module -Name AzureRM -Force
+
+if ($AzureRM -eq $false){ 
+Write-Host "AzureRM is already installed"}
